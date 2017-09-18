@@ -52,7 +52,7 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
     void* handle = dlopen("/vendor/lib/libOpenCL.so", RTLD_LAZY);
 
     if (!handle) {
-        return (*env)->NewStringUTF(env, "Hello from PingOpenCL !\n load OpenCL FAIL.\n Compiled with ABI " ABI ".");
+        return (*env)->NewStringUTF(env, "PingOpenCL: load OpenCL FAIL.\n Compiled with ABI " ABI ".");
     } else {
         cl_device_id device_id = NULL;
         cl_context context = NULL;
@@ -68,6 +68,8 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
         char name[1024];
         char version[1024];
         char driver[1024];
+
+        char rtnString[2048];
 
         cl_int (*getPlatformIdCount)(cl_uint,cl_platform_id *,cl_uint *);
         cl_int (*getDeviceIDs)(cl_platform_id,cl_device_type,cl_uint,cl_device_id *,cl_uint *);
@@ -90,14 +92,18 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
         ret = (*getDeviceIDs)(platform_id, CL_DEVICE_TYPE_GPU,1,&device_id,&ret_num_devices);
 
         ret = getDeviceInfo(device_id, CL_DEVICE_NAME, sizeof(name), name, NULL);
-
         ret = getDeviceInfo(device_id, CL_DEVICE_VERSION, sizeof(version), version, NULL);
         ret = getDeviceInfo(device_id, CL_DRIVER_VERSION, sizeof(driver), driver, NULL);
 
+        sprintf(rtnString,"PingOpenCL load OpenCL SUCCESS.\n");
+        sprintf(rtnString+strlen(rtnString),"Compiled with ABI %s.\n\n", ABI);
+        sprintf(rtnString+strlen(rtnString),"GPU\n");
+        sprintf(rtnString+strlen(rtnString)," - Name: %s\n", name);
+        sprintf(rtnString+strlen(rtnString)," - Version: %s\n", version);
+        sprintf(rtnString+strlen(rtnString)," - Driver: %s\n", driver);
+
         dlclose(handle);
 
-        jstring count = str;
-
-        return (*env)->NewStringUTF(env, "Hello from PingOpenCL !\n load OpenCL SUCCESS.\n Compiled with ABI " ABI ".");
+        return (*env)->NewStringUTF(env, rtnString);
     }
 }
