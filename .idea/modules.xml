@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/PingOpenCL.iml" filepath="$PROJECT_DIR$/PingOpenCL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pingopencl/pingopencl.iml" filepath="$PROJECT_DIR$/pingopencl/pingopencl.iml" />
+    </modules>
+  </component>
+</project>
