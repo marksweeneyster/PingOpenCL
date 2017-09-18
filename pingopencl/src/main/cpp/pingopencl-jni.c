@@ -65,15 +65,34 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
         cl_uint ret_num_platforms;
         cl_int ret;
 
+        char name[1024];
+        char version[1024];
+        char driver[1024];
+
         cl_int (*getPlatformIdCount)(cl_uint,cl_platform_id *,cl_uint *);
+        cl_int (*getDeviceIDs)(cl_platform_id,cl_device_type,cl_uint,cl_device_id *,cl_uint *);
+        cl_int (*getDeviceInfo)(cl_device_id    /* device */,
+                        cl_device_info  /* param_name */,
+                        size_t          /* param_value_size */,
+                        void *          /* param_value */,
+                        size_t *        /* param_value_size_ret */);
 
         getPlatformIdCount = dlsym(handle, "clGetPlatformIDs");
+        getDeviceIDs       = dlsym(handle, "clGetDeviceIDs");
+        getDeviceInfo      = dlsym(handle, "clGetDeviceInfo");
 
         ret = (*getPlatformIdCount)(1, &platform_id, &ret_num_platforms);
 
         char str [16];
 
         sprintf(str, "%d", ret_num_platforms);
+
+        ret = (*getDeviceIDs)(platform_id, CL_DEVICE_TYPE_GPU,1,&device_id,&ret_num_devices);
+
+        ret = getDeviceInfo(device_id, CL_DEVICE_NAME, sizeof(name), name, NULL);
+
+        ret = getDeviceInfo(device_id, CL_DEVICE_VERSION, sizeof(version), version, NULL);
+        ret = getDeviceInfo(device_id, CL_DRIVER_VERSION, sizeof(driver), driver, NULL);
 
         dlclose(handle);
 
