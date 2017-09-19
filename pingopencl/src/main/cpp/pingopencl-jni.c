@@ -13,6 +13,7 @@
 #include <CL/cl.h>
 #endif
 
+
 JNIEXPORT jstring JNICALL
 Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
                                                   jobject thiz )
