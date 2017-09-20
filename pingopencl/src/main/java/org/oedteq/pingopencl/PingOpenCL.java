@@ -15,7 +15,7 @@ public class PingOpenCL extends AppCompatActivity {
         tv.setText( stringFromJNI() );
     }
 
-    public native String  stringFromJNI();
+    public static native String  stringFromJNI();
 
     static {
         System.loadLibrary("pingopencl-jni");
