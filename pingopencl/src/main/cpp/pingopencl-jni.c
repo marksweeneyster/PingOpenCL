@@ -49,8 +49,27 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
 #else
 #define ABI "unknown"
 #endif
+    char libLocation[1024];
+    sprintf(libLocation,"libOpenCL.so");
 
-    void* handle = dlopen("/vendor/lib/libOpenCL.so", RTLD_LAZY);
+    void* handle = dlopen(libLocation, RTLD_LAZY);
+
+    if (!handle) {
+        sprintf(libLocation,"/vendor/lib/libOpenCL.so");
+        handle = dlopen(libLocation, RTLD_LAZY);
+    }
+    if (!handle) {
+        sprintf(libLocation,"/vendor/lib64/libOpenCL.so\n");
+        handle = dlopen(libLocation, RTLD_LAZY);
+    }
+    if (!handle) {
+        sprintf(libLocation,"/system/vendor/lib/libOpenCL.so");
+        handle = dlopen(libLocation, RTLD_LAZY);
+    }
+    if (!handle) {
+        sprintf(libLocation,"/system/vendor/lib64/libOpenCL.so");
+        handle = dlopen(libLocation, RTLD_LAZY);
+    }
 
     if (!handle) {
         return (*env)->NewStringUTF(env, "PingOpenCL: load OpenCL FAIL.\n Compiled with ABI " ABI ".");
@@ -102,6 +121,7 @@ Java_org_oedteq_pingopencl_PingOpenCL_stringFromJNI( JNIEnv* env,
         sprintf(rtnString+strlen(rtnString)," - Name: %s\n", name);
         sprintf(rtnString+strlen(rtnString)," - Version: %s\n", version);
         sprintf(rtnString+strlen(rtnString)," - Driver: %s\n", driver);
+        sprintf(rtnString+strlen(rtnString),"\n - Lib location: %s\n", libLocation);
 
         dlclose(handle);
 
